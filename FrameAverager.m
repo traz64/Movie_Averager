@@ -1,35 +1,35 @@
-function varargout = untitled(varargin)
-% UNTITLED MATLAB code for untitled.fig
-%      UNTITLED, by itself, creates a new UNTITLED or raises the existing
+function varargout = FrameAverager(varargin)
+% FrameAverager MATLAB code for FrameAverager.fig
+%      FrameAverager, by itself, creates a new FrameAverager or raises the existing
 %      singleton*.
 %
-%      H = UNTITLED returns the handle to a new UNTITLED or the handle to
+%      H = FrameAverager returns the handle to a new FrameAverager or the handle to
 %      the existing singleton*.
 %
-%      UNTITLED('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in UNTITLED.M with the given input arguments.
+%      FrameAverager('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in FrameAverager.M with the given input arguments.
 %
-%      UNTITLED('Property','Value',...) creates a new UNTITLED or raises the
+%      FrameAverager('Property','Value',...) creates a new FrameAverager or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before untitled_OpeningFcn gets called.  An
+%      applied to the GUI before FrameAverager_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to untitled_OpeningFcn via varargin.
+%      stop.  All inputs are passed to FrameAverager_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help untitled
+% Edit the above text to modify the response to help FrameAverager
 
-% Last Modified by GUIDE v2.5 22-Dec-2016 03:32:59
+% Last Modified by GUIDE v2.5 22-Dec-2016 13:42:55
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @untitled_OpeningFcn, ...
-                   'gui_OutputFcn',  @untitled_OutputFcn, ...
+                   'gui_OpeningFcn', @FrameAverager_OpeningFcn, ...
+                   'gui_OutputFcn',  @FrameAverager_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -41,29 +41,30 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
+
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before untitled is made visible.
-function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before FrameAverager is made visible.
+function FrameAverager_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to untitled (see VARARGIN)
+% varargin   command line arguments to FrameAverager (see VARARGIN)
 
-% Choose default command line output for untitled
+% Choose default command line output for FrameAverager
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes untitled wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% UIWAIT makes FrameAverager wait for user response (see UIRESUME)
+% uiwait(handles.FrameAverager);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = untitled_OutputFcn(hObject, eventdata, handles) 
+function varargout = FrameAverager_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -73,35 +74,48 @@ function varargout = untitled_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in calculate.
+function calculate_Callback(hObject, eventdata, handles)
+% hObject    handle to calculate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+if exists(handles.pathtext.string,'file')==2
+    creategraph(handles.pathtext.string,str2double(handles.ar.string),...
+        fpp,mode,thresh);
+else 
+    warndlg('bad path')
+end
 
 % --- Executes on button press in checkbox1.
 function checkbox1_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+if get(hObject,'Value')
+    thresh=str2double(handles.threshold.string);
+else 
+    thresh=-1;
+end
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
 
 
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function threshold_Callback(hObject, eventdata, handles)
+% hObject    handle to threshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+thresh=str2double(get(hObject,'String'));
+if isnan(thresh)
+    thresh=-1;
+end
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of threshold as text
+%        str2double(get(hObject,'String')) returns contents of threshold as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function threshold_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to threshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -113,18 +127,18 @@ end
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function pathtext_Callback(hObject, eventdata, handles)
+% hObject    handle to pathtext (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of pathtext as text
+%        str2double(get(hObject,'String')) returns contents of pathtext as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function pathtext_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pathtext (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -136,18 +150,22 @@ end
 
 
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function ar_Callback(hObject, eventdata, handles)
+% hObject    handle to ar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of ar as text
+%        str2double(get(hObject,'String')) returns contents of ar as a double
+ar=str2double(get(hObject,'String'));
+if isnan(ar)
+    ar=-1;
+end
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function ar_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -163,7 +181,7 @@ function slider1_Callback(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+ppf=int16(get(hObject,'Value')*299)+1;
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -173,15 +191,16 @@ function slider1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
+ppf=1;
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in browse.
+function browse_Callback(hObject, eventdata, handles)
+% hObject    handle to browse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.pathtext.string=uigetfile(getFilterSpec(VideoReader.getFileFormats()));
