@@ -1,9 +1,9 @@
 function creategraph(file,ar,fpp,mode,thresh)
 video=VideoReader(file);
 i=1;
-xdim=floor(video.Duration*video.FrameRate/fpp);
+xdim=double(video.Duration*video.FrameRate/fpp);
 output=zeros(1,i,3);
-inputbuffer=zeros(video.Width,video.Height,3,fpp);
+inputbuffer=zeros(video.Height,video.Width,3,fpp);
 assert(fpp>0)
 h=waitbar(0,'processing');
 for i=1:xdim
@@ -31,8 +31,10 @@ for i=1:xdim
     
     
 end
+
 output=output/255;
-output=repmat(output,1,round(xdim/ar),2);
+output=repmat(output,round(xdim/ar),1,1);
+close(h);
 figure
 imshow(output)
 imwrite(output,[video.Name,'.png'])
