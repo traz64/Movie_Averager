@@ -79,9 +79,24 @@ function calculate_Callback(hObject, eventdata, handles)
 % hObject    handle to calculate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if exists(handles.pathtext.string,'file')==2
-    creategraph(handles.pathtext.string,str2double(handles.ar.string),...
-        fpp,mode,thresh);
+if handles.Mean.Value
+    mode=0;
+elseif handles.median.Value
+    mode=1;
+else
+    mode=2;
+end
+if handles.checkbox1.Value
+    thresh=str2double(handles.threshold.String);
+    if isnan(thresh)
+        thresh=0;
+    end
+else 
+    thresh=-1;
+end
+if exist(handles.pathtext.String,'file')==2
+    creategraph(handles.pathtext.String,str2double(handles.ar.String),...
+        uint16(str2double(handles.ppf.String)),mode,thresh);
 else 
     warndlg('bad path')
 end
@@ -91,11 +106,7 @@ function checkbox1_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if get(hObject,'Value')
-    thresh=str2double(handles.threshold.string);
-else 
-    thresh=-1;
-end
+
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
 
 
@@ -159,7 +170,7 @@ function ar_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of ar as a double
 ar=str2double(get(hObject,'String'));
 if isnan(ar)
-    ar=-1;
+    ar=1;
 end
 
 
@@ -182,6 +193,8 @@ function slider1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ppf=int16(get(hObject,'Value')*299)+1;
+handles.ppf.String=num2str(ppf);
+
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -203,4 +216,5 @@ function browse_Callback(hObject, eventdata, handles)
 % hObject    handle to browse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.pathtext.string=uigetfile(getFilterSpec(VideoReader.getFileFormats()));
+[file,path,~]=uigetfile(getFilterSpec(VideoReader.getFileFormats()));
+handles.pathtext.String=[path,file];
